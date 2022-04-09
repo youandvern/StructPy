@@ -89,16 +89,14 @@ class AISC():
 		"""Print all AISC shape properties in an easy to read table."""
 		row_num = self.row_number
 		data = self.data
-		
+
 		print('Here are the properties')
 		print('Section %s in row %i' % (data[row_num][2], row_num))
-		
+
 		for col in range(4, 84):
 			colname = data[0][col]
 			val = data[row_num][col]
-			if val == '–':
-				pass
-			else:
+			if val != '–':
 				print('{0:<3} | {1:<8} | {2:>8}'.format(col, colname, str(val)))		
 		
 		
@@ -133,14 +131,12 @@ class IBeam(Section):
 	# If the parameters are updated then so are properties
 	@property
 	def A(self):
-		A = 2 * (self.b * self.tf) + self.d * self.tw
-		return A
+		return 2 * (self.b * self.tf) + self.d * self.tw
 
 	@property
 	def Ix(self):
-		var1 = (1 / 12 * self.b * (self.d + 2 * self.tf)**3
-					-1 / 12 * (self.b - self.tw) * self.d**3)
-		return var1
+		return (1 / 12 * self.b * (self.d + 2 * self.tf)**3 -
+		        1 / 12 * (self.b - self.tw) * self.d**3)
 		
 	@property
 	def Iy(self):
@@ -195,13 +191,11 @@ class Rectangle(Section):
 	# Derived properties
 	@property
 	def A(self):
-		A = self.b * self.h
-		return A
+		return self.b * self.h
 
 	@property
 	def Ix(self):
-		Ix = 1 / 12 * self.b * self.h**3
-		return Ix
+		return 1 / 12 * self.b * self.h**3
 
 	@property
 	def Iy(self):
@@ -212,8 +206,7 @@ class Rectangle(Section):
 		return (self.b * self.h**2) / 6
 
 	def Q(self, zeta):
-		Q = 1 / 4 * self.h * (1 / 4 * self.h**2 - zeta**2)
-		return Q
+		return 1 / 4 * self.h * (1 / 4 * self.h**2 - zeta**2)
 		
 	@property
 	def xpts(self):
@@ -338,6 +331,5 @@ class Triangle(Section):
 			return 1 / 2 * self.b * self.h
 
 
-if __name__ == "__main__":
-	pass
+pass
 

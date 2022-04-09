@@ -54,19 +54,19 @@ def loading_from_yaml(filePath):
 			data = yaml.safe_load(stream)
 		except yaml.YAMLError as exc:
 			print(exc)
-	
+
 	loading = np.zeros(2*len(data['Nodes']))
 	nodeMap = {} # map nodes to indicies
-	
+
 	for index, node in enumerate(data['Nodes']):
 		for name, value in node.items():
-			nodeMap.update({name: index})
-	
+			nodeMap[name] = index
+
 	for load in data['Loads']:
 		for nodelabel, value in load.items():
 			loading[2*nodeMap[nodelabel]] = value['x']
 			loading[2*nodeMap[nodelabel]+1] = value['y']
-	
+
 	return loading
 	
 
@@ -76,8 +76,8 @@ def Truss_Test_From_File(fileName):
 	s2 = Truss.Truss.from_yaml_file(fileName)
 	loading = loading_from_yaml(fileName)
 	s2.directStiffness(loading)
-        
-	for i, member in enumerate(s2.members):
+
+	for member in s2.members:
 		assert approx(member.axial, 0.001) == member.expectedaxial
 
 

@@ -16,13 +16,11 @@ class ElementLoad():
 	@property
 	def equivalentNodalLoad(self):
 		
-		L = self.element.length
-		w = self.w
-		
 		if self.type == 'constant':
+			L = self.element.length
+			w = self.w
+
 			return w * L / 2
-		elif self.type == 'point':
-			pass
 
 
 class Loading(object):
