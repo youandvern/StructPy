@@ -10,43 +10,36 @@ def find(name, path):
 def getAbsPath(file):
 	current = os.getcwd()
 	head, tail = os.path.split(current)
-	path = find(file, head)
-	return path
+	return find(file, head)
 
 def loadAISC(file='shapes.xlsx'):
 	path = getAbsPath(file)
 	wb2 = xl.load_workbook(path)
-	item2pickle = wb2.get_sheet_by_name('Database v15.0')
-	return item2pickle
+	return wb2.get_sheet_by_name('Database v15.0')
 	
 	
 def database2list(file='shapes.xlsx'):
 	path = getAbsPath(file)
 	sheet = xl.load_workbook(path)['Database v15.0']
-	
+
 	data = []
 	labels = []
 	for row in sheet.iter_rows(max_row=2092):
 		labels.append(row[2].value)
-		row_data = []
-		for cell in row:
-			row_data.append(cell.value)
-		
+		row_data = [cell.value for cell in row]
 		data.append(row_data)
-		
+
 	return (data, labels)
 
 def pickleObject(item2pickle, file='pickleditem.txt'):
 	path = getAbsPath(file)
-	fileObject = open(path, 'wb')
-	pickle.dump(item2pickle, fileObject)
-	fileObject.close()
+	with open(path, 'wb') as fileObject:
+		pickle.dump(item2pickle, fileObject)
 
 def unPickleObject(file='pickleditem.txt'):
 	path = getAbsPath(file)
 	fileObject = open(path, 'rb')
-	b = pickle.load(fileObject)
-	return b
+	return pickle.load(fileObject)
 
 def main():
 	a = database2list()

@@ -118,7 +118,5 @@ s1.plotDeformation(scale=100)
 
 minimum_area = 48.72 / 46
 
-sum = 0
-for member in s1.members:
-	sum += member.length
+sum = sum(member.length for member in s1.members)
 print(sum)

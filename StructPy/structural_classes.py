@@ -87,14 +87,13 @@ class Structure(object):
 		self.nodes = []
 		self.nNodes = 0
 		self.nMembers = 0
-		
+
 		self.withCaching = withCaching
-		
+
 		if cross is None or material is None:
 			raise ValueError('Please define default cross section or material type.')
-		else:
-			self.defaultcross = cross
-			self.defaultmaterial = material
+		self.defaultcross = cross
+		self.defaultmaterial = material
 
 	@classmethod
 	def from_yaml_file(cls, filePath):
@@ -120,7 +119,7 @@ class Structure(object):
 				except KeyError:
 					s1.addNode(value['x'], value['y'])
 
-				nodeMap.update({key: i})
+				nodeMap[key] = i
 
 		## Add members
 		for member in data['Members']:
@@ -213,9 +212,9 @@ class Structure(object):
 		self.isStable()
 		globalD = self.solve(loading)
 		nDoFPerNode = self.__class__.nDoFPerNode
-		for i, node in enumerate(self.nodes):
+		for node in self.nodes:
 			node.deformation = [globalD[nDoFPerNode*node.n+i] for i in range(nDoFPerNode)]
-			
+
 		return globalD
 
 class Planar(object):
@@ -237,10 +236,10 @@ class Planar(object):
 			if member.length > length:
 				length = member.length
 
-		for i, node in enumerate(self.nodes):
+		for node in self.nodes:
 			plt.scatter([node.x], [node.y], color='#000000', s=100)
 			R = 0.2*length  # length of support
-			
+
 			if node.BC[0] == 0:
 				x1 = node.x - R
 				x2 = node.x
@@ -254,8 +253,8 @@ class Planar(object):
 				y1 = node.y - R
 				y2 = node.y
 				plt.plot([x1, x2], [y1, y2], color='#57d261', lw=10, zorder=-1)
-		
-		for i, member in enumerate(self.members):
+
+		for member in self.members:
 			x1 = member.SN.x
 			y1 = member.SN.y
 			x2 = member.EN.x
@@ -276,10 +275,10 @@ class Planar(object):
 		plt.figure(nfig)
 		self.plot(show=False)
 
-		for i, node in enumerate(self.nodes):
+		for node in self.nodes:
 			plt.scatter([node.x + scale*node.xdef], [node.y + scale*node.ydef], color='#d80000', s=100)
 
-		for i, member in enumerate(self.members):
+		for member in self.members:
 			x1 = member.SN.x + scale*member.SN.xdef
 			y1 = member.SN.y + scale*member.SN.ydef
 			x2 = member.EN.x + scale*member.EN.xdef
@@ -290,14 +289,14 @@ class Planar(object):
 
 	def printNodes(self):
 		print('\nStructure Nodes:')
+		string = 'Node %i: (%.1f, %.1f)'
 		for i, node in enumerate(self.nodes):
-			string = 'Node %i: (%.1f, %.1f)'
 			variables = (i, node.x, node.y)
 			print(string % variables)
 
 	def printMembers(self):
 		print('\nStructure Members:')
+		string = 'Member %i: (%i --> %i), L = %.1f, f = %.2f'
 		for i, member in enumerate(self.members):
-			string = 'Member %i: (%i --> %i), L = %.1f, f = %.2f'
 			variables = (i, member.SN.n, member.EN.n, member.length, member.axial)
 			print(string % variables)

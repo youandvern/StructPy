@@ -10,22 +10,20 @@ def cached_property(expensive_function):
     @property
     def caching_function(self):
         cacheName = f"__cache__{expensive_function.__name__}"
-        
-		
+
+
         try: # check if the cache has been initialized
             cacheExists = True
             cache = getattr(self, cacheName)
         except AttributeError:
             cacheExists = False
             cache = None
-        
-		# Check if the cache is valid (not None), caching is requested, and that it exists
-        if ( cache is not None ) and ( self.withCaching == True ) and (cacheExists == True):
+
+        if cache is not None and self.withCaching == True and cacheExists:
             return cache
-        else:
 			#worst case, now we have to compute the quantity
-            computed = expensive_function(self)
-            setattr(self, cacheName, computed)
-            return computed
+        computed = expensive_function(self)
+        setattr(self, cacheName, computed)
+        return computed
         
     return caching_function

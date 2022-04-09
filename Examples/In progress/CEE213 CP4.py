@@ -20,13 +20,13 @@ def simpsons(f, a, b, n): #function, start, stop, intervals
 		h = (b-a)/n
 		k = 0.0
 		x = a + h
-		
-		for i in range(1, int(n/2) + 1):
+
+		for _ in range(1, int(n/2) + 1):
 			k += 4*f(x)
 			x += 2*h
-		
+
 		x = a + 2*h
-		for i in range(1, n//2):
+		for _ in range(1, n//2):
 			k += 2*f(x)
 			x += 2*h
 		return (h/3)*(f(a) + f(b) + k)
